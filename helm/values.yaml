@@ -1,9 +1,7 @@
 image:
-  repository: myacr.azurecr.io/myapp
+  repository: youracrname.azurecr.io/myapp
   tag: latest
 
 service:
   type: LoadBalancer
   port: 80
-
-replicaCount: 1
