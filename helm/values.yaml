@@ -1,10 +1,7 @@
-replicaCount: 1
-
 image:
   repository: myacr.azurecr.io/myapp
-  pullPolicy: IfNotPresent
-  tag: "latest"
+  tag: latest
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 80
