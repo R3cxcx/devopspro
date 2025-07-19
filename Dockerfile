@@ -2,14 +2,13 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 5109
 
-
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+WORKDIR /src
 COPY . .
-RUN dotnet restore
-RUN dotnet publish -c Release -o out
+RUN dotnet restore DevOpsApp/DevOpsApp.csproj
+RUN dotnet publish DevOpsApp/DevOpsApp.csproj -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
-COPY --from=build /app/out .
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "DevOpsApp.dll"]

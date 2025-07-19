@@ -19,3 +19,6 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
             - containerPort: 5109
+          env:
+            - name: ASPNETCORE_URLS
+              value: "http://+:5109"
