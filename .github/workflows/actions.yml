@@ -1,0 +1,55 @@
+name: Build, Push & Deploy .NET App to AKS with Helm
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  ACR_NAME: youracrname              # بدون .azurecr.io
+  IMAGE_NAME: myapp
+  RESOURCE_GROUP: your-resource-group
+  AKS_CLUSTER: your-aks-name
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'
+
+    - name: Restore & Build
+      run: |
+        dotnet restore
+        dotnet build --configuration Release
+
+    - name: Run Tests
+      run: dotnet test --no-restore --verbosity normal
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Docker login to ACR
+      run: az acr login --name $ACR_NAME
+
+    - name: Build and Push Docker image
+      run: |
+        docker build -t $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }} .
+        docker push $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }}
+
+    - name: Get AKS credentials
+      run: az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
+
+    - name: Deploy with Helm
+      run: |
+        helm upgrade --install $IMAGE_NAME ./helm \
+          --set image.repository=$ACR_NAME.azurecr.io/$IMAGE_NAME \
+          --set image.tag=${{ github.sha }}
