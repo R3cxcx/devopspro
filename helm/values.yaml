@@ -1,1 +1,8 @@
+image:
+  repository: youracrname.azurecr.io/myapp
+  tag: latest
+
+service:
+  type: LoadBalancer
+  port: 80
 
