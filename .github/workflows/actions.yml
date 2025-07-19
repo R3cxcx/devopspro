@@ -56,10 +56,9 @@ name: Docker logout ACR
 name: Docker build
     run: |
       docker build -t $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }} .
-
-    
+      echo "Built image: $ACR_NAME.azurecr.io/$IMAGE_NAME:${{ github.sha }}"
 name: Docker login
-    run: az acr login --name $ACR_NAME
+  run: az acr login --name $ACR_NAME
 
     
 name: Push image to ACR
@@ -72,4 +71,4 @@ name: Set AKS context
     
 name: Deploy to AKS using Helm
     run: |
-      helm upgrade --install myapp ./helm \--set image.repository=$ACR_NAME.azurecr.io/$IMAGE_NAME \--set image.tag=${{ github.sha }} \--set service.port=5109
+      helm upgrade --install myapp ./helm \--set image.repository=$ACR_NAME.azurecr.io/$IMAGE_NAME \--set image.tag=${{ github.sha }}
