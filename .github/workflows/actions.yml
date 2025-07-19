@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      ACR_NAME: youracrname
-      IMAGE_NAME: myapp
-      RESOURCE_GROUP: your-resource-group
-      AKS_CLUSTER: your-aks-name
+      ACR_NAME: ${{ secrets.ACR_NAME }}
+      IMAGE_NAME: ${{ secrets.IMAGE_NAME }}
+      RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+      AKS_CLUSTER: ${{ secrets.AKS_CLUSTER }}
       DOTNET_ROOT: /usr/share/dotnet
 
     steps:
@@ -29,6 +29,9 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+    - name: Show logged in user
+      run: az account show
+
     - name: Restore dependencies
       run: dotnet restore
 
@@ -37,6 +40,9 @@ jobs:
 
     - name: Publish app
       run: dotnet publish -c Release -o out
+
+    - name: Docker logout ACR
+      run: docker logout $ACR_NAME.azurecr.io
 
     - name: Docker build
       run: |
