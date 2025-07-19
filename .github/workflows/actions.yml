@@ -33,13 +33,13 @@ jobs:
         run: az account show
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore DevOpsApp.csproj
 
       - name: Build project
-        run: dotnet build --configuration Release
+        run: dotnet build DevOpsApp.csproj --configuration Release
 
       - name: Publish app
-        run: dotnet publish -c Release -o out
+        run: dotnet publish DevOpsApp.csproj -c Release -o out
 
       - name: Docker logout ACR
         run: docker logout $ACR_NAME.azurecr.io
