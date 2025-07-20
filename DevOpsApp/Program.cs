@@ -1,5 +1,11 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// استمع على البورت 5109 داخل الحاوية
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5109);
+});
+
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
