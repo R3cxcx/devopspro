@@ -54,7 +54,7 @@ terraform/
 │ ├── acr/
 │ └── postgres/
 
-Terraform Architecture Rationale
+Terraform Architecture Rationale.
 
 Modular design supports code reuse and easy maintenance.
 
